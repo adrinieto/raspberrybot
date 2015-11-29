@@ -1,0 +1,5 @@
+BOT_NAME = "raspberry77bot"
+BOT_TOKEN = "116363007:AAGD7rgTyCZQVNPKyRLhLU0BMBwM2b48iYY"
+
+
+USER_ID_FILE = "user_id.dat"
