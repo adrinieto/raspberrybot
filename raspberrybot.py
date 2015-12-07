@@ -48,7 +48,7 @@ def send_welcome(message):
     elif message.chat.id == bot.user_id:
         bot.reply_to(message, "Welcome back!")
     else:
-        bot.reply_to(message, "Invalid user. The Bot is linked with other user" % bot.user_id)
+        bot.reply_to(message, "Invalid user. The Bot is linked with other user %s" % bot.user_id)
 
 
 @bot.message_handler(commands=['public_ip'], func=bot.validate_user)
