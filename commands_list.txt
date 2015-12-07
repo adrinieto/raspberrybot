@@ -1,4 +1,5 @@
 #Use this with the BotFather in /setcommands
 
-public_ip - Get Raspberry public IP
-local_ip - Get Raspberry local IP
+start - Link the current user_id with the Raspberry. Only the first user who call this command will be responded on the rest of the commands
+public_ip - Get Raspberry public IP.
+local_ip - Get Raspberry local IP.

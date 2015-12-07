@@ -8,6 +8,12 @@ class TelegramBot(telebot.TeleBot):
     def __init__(self, token, threaded=True):
         super(TelegramBot, self).__init__(token, threaded)
         self._user_id = self.read_user_id()
+        if self._user_id:
+            print("Listening user %d" % self.user_id)
+            self.send_init_message()
+
+    def send_init_message(self):
+        self.send_message(self.user_id, "Raspberry Pi powered on")
 
     @staticmethod
     def read_user_id():
@@ -38,11 +44,11 @@ bot = TelegramBot(config.BOT_TOKEN)
 def send_welcome(message):
     if not bot.user_id:
         bot.user_id = message.chat.id
-        bot.reply_to(message, "Añadido usuario %d" % bot.user_id)
+        bot.reply_to(message, "Added user %d" % bot.user_id)
     elif message.chat.id == bot.user_id:
         bot.reply_to(message, "Welcome back!")
     else:
-        bot.reply_to(message, "Ya existe un usuario registrado '%d'" % bot.user_id)
+        bot.reply_to(message, "Invalid user. The Bot is linked with other user" % bot.user_id)
 
 
 @bot.message_handler(commands=['public_ip'], func=bot.validate_user)
@@ -57,14 +63,13 @@ def get_local_ip(message):
 
 @bot.message_handler(func=bot.validate_user)
 def invalid_command(message):
-    bot.reply_to(message, "Comando inválido")
+    bot.reply_to(message, "Invalid command")
 
 
 @bot.message_handler(func=lambda m: True)
 def unauthorized_user(message):
-    bot.reply_to(message, "Usuario incorrecto")
+    bot.reply_to(message, "User not allowed")
 
 
 if __name__ == "__main__":
-    print("Listening user %d" % bot.user_id)
     bot.polling()
