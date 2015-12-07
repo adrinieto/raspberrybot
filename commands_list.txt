@@ -1,0 +1,4 @@
+#Use this with the BotFather in /setcommands
+
+public_ip - Get Raspberry public IP
+local_ip - Get Raspberry local IP
