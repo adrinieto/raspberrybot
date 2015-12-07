@@ -2,7 +2,7 @@ raspberry-bot
 =============
 
 A small bot to get info from the Raspberry Pi.
-The commands supported are listed in [`commands_list.txt`](../blob/master/commands_lis.txt).
+The commands supported are listed in [`commands_list.txt`](../master/commands_list.txt).
 
 ##### Usage
 
