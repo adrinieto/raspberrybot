@@ -1,6 +1,7 @@
 # set encoding: utf-8
 import config
 import telebot
+import utils
 
 
 class TelegramBot(telebot.TeleBot):
@@ -13,7 +14,7 @@ class TelegramBot(telebot.TeleBot):
         try:
             with open(config.USER_ID_FILE, 'r') as user_id_file:
                 return int(user_id_file.readline())
-        except FileNotFoundError:
+        except IOError:
             return None
 
     @property
@@ -26,6 +27,9 @@ class TelegramBot(telebot.TeleBot):
         with open(config.USER_ID_FILE, 'w') as user_id_file:
             user_id_file.write(str(self.user_id))
 
+    def validate_user(self, message):
+        return message.chat.id == self.user_id
+
 
 bot = TelegramBot(config.BOT_TOKEN)
 
@@ -35,13 +39,32 @@ def send_welcome(message):
     if not bot.user_id:
         bot.user_id = message.chat.id
         bot.reply_to(message, "Añadido usuario %d" % bot.user_id)
+    elif message.chat.id == bot.user_id:
+        bot.reply_to(message, "Welcome back!")
     else:
-        bot.reply_to(message, "Ya existe un usuario registrado")
+        bot.reply_to(message, "Ya existe un usuario registrado '%d'" % bot.user_id)
+
+
+@bot.message_handler(commands=['public_ip'], func=bot.validate_user)
+def get_public_ip(message):
+    bot.reply_to(message, utils.get_public_ip())
+
+
+@bot.message_handler(commands=['local_ip'], func=bot.validate_user)
+def get_local_ip(message):
+    bot.reply_to(message, utils.get_local_ip())
+
+
+@bot.message_handler(func=bot.validate_user)
+def invalid_command(message):
+    bot.reply_to(message, "Comando inválido")
 
 
 @bot.message_handler(func=lambda m: True)
-def echo_all(message):
-    bot.reply_to(message, message.chat)
+def unauthorized_user(message):
+    bot.reply_to(message, "Usuario incorrecto")
 
 
-bot.polling()
+if __name__ == "__main__":
+    print("Listening user %d" % bot.user_id)
+    bot.polling()
