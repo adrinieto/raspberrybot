@@ -1,0 +1,6 @@
+py==1.4.31
+pyTelegramBotAPI==1.4.0
+pytest==2.8.3
+requests==2.8.1
+six==1.10.0
+wheel==0.24.0
