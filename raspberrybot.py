@@ -61,9 +61,30 @@ def get_local_ip(message):
     bot.reply_to(message, utils.get_local_ip())
 
 
+@bot.message_handler(commands=['torrent_add'], func=bot.validate_user)
+def torrent_management(message):
+    args = message.text.split()
+    if len(args) < 2:
+        bot.reply_to(message, "Missing torrent URL. Usage: /torrent_add [URL]")
+        return
+    url = args[1]
+    response = utils.torrent_add(url)
+    bot.reply_to(message, response)
+    # if response:
+    #     bot.reply_to(message, "Torrent '%s' added" % response)
+    # else:
+    #     bot.reply_to(message, "An error happened adding the torrent")
+
+
+@bot.message_handler(commands=['torrent_list'], func=bot.validate_user)
+def torrent_management(message):
+    response = utils.torrent_list()
+    bot.reply_to(message, response)
+
+
 @bot.message_handler(func=bot.validate_user)
 def invalid_command(message):
-    bot.reply_to(message, "Invalid command")
+    bot.reply_to(message, "Invalid command '%s'" % message.text)
 
 
 @bot.message_handler(func=lambda m: True)
