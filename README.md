@@ -21,3 +21,7 @@ Add this in `etc/rc.local` before `exit 0`:
 cd /home/pi/raspberry-bot
 ./venv/bin/python3 raspberrybot.py &
 ```
+
+#### Sample
+
+![](https://github.com/adrinieto/raspberrybot/screenshots/telegram_sample.jpg)
