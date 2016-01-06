@@ -24,4 +24,4 @@ cd /home/pi/raspberry-bot
 
 #### Sample
 
-![](https://github.com/adrinieto/raspberrybot/screenshots/telegram_sample.jpg)
+![](https://github.com/adrinieto/raspberrybot/blob/master/screenshots/telegram_sample.jpg)
