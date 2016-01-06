@@ -1,7 +1,11 @@
+# set encoding: utf-8
+import logging
 import subprocess
 from urllib.request import urlopen
 
 import config
+
+log = logging.getLogger(__name__)
 
 
 def system_call_with_response(command):
@@ -23,10 +27,12 @@ def get_public_ip():
 def torrent_add(url):
     command = "transmission-remote -n %s:%s -a '%s'" % (config.TRANSMISSION_USER, config.TRANSMISSION_PASSWORD, url)
     response = system_call_with_response(command)
+    log.debug("Response from adding torrent: %s", response)
     return response
 
 
 def torrent_list():
     command = "transmission-remote -n %s:%s -l" % (config.TRANSMISSION_USER, config.TRANSMISSION_PASSWORD)
     response = system_call_with_response(command)
+    log.debug("Response from list torrents: %s", response)
     return response
