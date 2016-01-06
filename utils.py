@@ -4,6 +4,7 @@ import subprocess
 from urllib.request import urlopen
 
 import config
+from models import Torrent
 
 log = logging.getLogger(__name__)
 
@@ -12,7 +13,7 @@ def system_call_with_response(command):
     task = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
     output = task.stdout.read()
     task.wait()
-    return output
+    return output.decode("utf-8")
 
 
 def get_local_ip():
@@ -35,4 +36,10 @@ def torrent_list():
     command = "transmission-remote -n %s:%s -l" % (config.TRANSMISSION_USER, config.TRANSMISSION_PASSWORD)
     response = system_call_with_response(command)
     log.debug("Response from list torrents: %s", response)
-    return response
+
+    lines = response.split("\n")[1:-2]  # header in first line, summary and blank line at the end
+    torrents = []
+    for x in lines:
+        words = [w for w in x.split("  ") if w]
+        torrents.append(Torrent(*words))
+    return torrents

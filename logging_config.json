@@ -35,6 +35,11 @@
         "file"
       ],
       "level": "DEBUG"
+    },
+    "models": {
+      "handlers": [ "console"],
+      "level": "INFO"
+
     }
   }
 }

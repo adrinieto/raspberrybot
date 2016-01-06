@@ -92,17 +92,20 @@ def torrent_add(message):
         return
     url = args[1]
     response = utils.torrent_add(url)
-    bot.reply_to(message, response)
-    # if response:
-    #     bot.reply_to(message, "Torrent '%s' added" % response)
-    # else:
-    #     bot.reply_to(message, "An error happened adding the torrent")
+    if "success" in response:
+        log.info("Torrent added")
+        bot.reply_to(message, "Torrent added")
+    else:
+        log.info("Error adding torrent")
+        bot.reply_to(message, response)
 
 
 @bot.message_handler(commands=['torrent_list'], func=bot.validate_user)
 def torrent_list(message):
     log.info("Handling command list torrents - %s" % message.text)
-    response = utils.torrent_list()
+    torrents = utils.torrent_list()
+    log.info("Torrents: %s", torrents)
+    response = "\n".join([t.format_telegram() for t in torrents])
     bot.reply_to(message, response)
 
 
