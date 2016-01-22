@@ -42,7 +42,7 @@ class TelegramBot(telebot.TeleBot):
 
     @user_id.setter
     def user_id(self, user_id):
-        log.info("Seting user_id to " % self.user_id)
+        log.info("Setting user_id to %s" % user_id)
         self._user_id = user_id
         with open(config.USER_ID_FILE, 'w') as user_id_file:
             log.info("Writing user_id to file '%s'" % config.USER_ID_FILE)
