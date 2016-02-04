@@ -25,6 +25,10 @@ def get_public_ip():
     return urlopen("http://ipecho.net/plain").read()
 
 
+def get_uptime():
+    return system_call_with_response("uptime")
+
+
 def torrent_add(url):
     command = "transmission-remote -n %s:%s -a '%s'" % (config.TRANSMISSION_USER, config.TRANSMISSION_PASSWORD, url)
     response = system_call_with_response(command)

@@ -82,6 +82,12 @@ def get_local_ip(message):
     bot.reply_to(message, utils.get_local_ip())
 
 
+@bot.message_handler(commands=['uptime'], func=bot.validate_user)
+def get_uptime(message):
+    log.info("Handling command uptime - %s" % message.text)
+    bot.reply_to(message, utils.get_uptime())
+
+
 @bot.message_handler(commands=['torrent_add'], func=bot.validate_user)
 def torrent_add(message):
     log.info("Handling command add torrent - %s" % message.text)
