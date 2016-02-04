@@ -122,4 +122,7 @@ def unauthorized_user(message):
 
 
 if __name__ == "__main__":
-    bot.polling()
+    try:
+        bot.polling()
+    except Exception:
+        log.exception("Error during polling")
