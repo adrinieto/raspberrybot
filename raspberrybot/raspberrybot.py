@@ -3,6 +3,8 @@ import json
 import logging
 import logging.config
 
+import time
+
 import config
 import telebot
 import utils
@@ -127,8 +129,13 @@ def unauthorized_user(message):
     bot.reply_to(message, "User not allowed")
 
 
-if __name__ == "__main__":
+def polling():
     try:
-        bot.polling()
+        bot.polling(none_stop=True)
     except Exception:
-        log.exception("Error during polling")
+        log.exception("Error during polling. Waiting to reconnect...")
+        time.sleep(5*60)
+        polling()
+
+if __name__ == "__main__":
+    polling()
