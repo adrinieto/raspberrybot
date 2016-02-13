@@ -1,13 +1,11 @@
-# set encoding: utf-8
 import json
 import logging
 import logging.config
 
 import time
 
-import config
 import telebot
-import utils
+from raspberrybot import config, utils
 
 with open(config.LOGGING_CONFIG_FILE) as config_file:
     logging.config.dictConfig(json.load(config_file))
@@ -134,8 +132,9 @@ def polling():
         bot.polling(none_stop=True)
     except Exception:
         log.exception("Error during polling. Waiting to reconnect...")
-        time.sleep(5*60)
+        time.sleep(5 * 60)
         polling()
+
 
 if __name__ == "__main__":
     polling()
