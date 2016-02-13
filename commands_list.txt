@@ -6,3 +6,5 @@ local_ip - Get Raspberry local IP
 uptime - Get uptime
 torrent_add - Adds a new torrent
 torrent_list - Lists all torrents
+torrent_info - Info about the TORRENT_ID
+torrent_remove - Remove the TORRENT_ID

@@ -6,7 +6,7 @@ log = logging.getLogger(__name__)
 class Torrent:
     def __init__(self, *args):
         log.debug("Torrent args: %s", args)
-        self.id = args[0]
+        self.id = int(args[0])
         self.done = args[1]
         self.downloaded = args[2]
         self.eta = args[3]
@@ -17,7 +17,7 @@ class Torrent:
         self.name = args[8]
 
     def format_telegram(self):
-        return "[{t.id}] {t.name}\n   {t.status} | {t.done} | \u2B06{t.up:^10}  \u2B07{t.down:^10} | {t.eta}".format(
+        return "*[{t.id}]* _{t.name}_\n   {t.status} | {t.done} | \u2B06{t.up:^10}  \u2B07{t.down:^10} | *{t.eta}*".format(
             t=self)
 
     def __repr__(self):

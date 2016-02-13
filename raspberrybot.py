@@ -112,7 +112,31 @@ def torrent_list(message):
     torrents = utils.torrent_list()
     log.info("Torrents: %s", torrents)
     response = "\n".join([t.format_telegram() for t in torrents])
-    bot.reply_to(message, response)
+    bot.reply_to(message, response, parse_mode="Markdown")
+
+
+@bot.message_handler(commands=['torrent_info'], func=bot.validate_user)
+def torrent_info(message):
+    log.info("Handling command info torrent - %s" % message.text)
+    args = message.text.split()
+    if len(args) < 2:
+        log.warn("Missing torrent ID")
+        bot.reply_to(message, "Missing torrent ID. Usage: /torren_info [TORRENT_ID]")
+        return
+    torrent_id = args[1]
+    bot.reply_to(message, utils.torrent_info(torrent_id))
+
+
+@bot.message_handler(commands=['torrent_remove'], func=bot.validate_user)
+def torrent_reomve(message):
+    log.info("Handling command remove torrent - %s" % message.text)
+    args = message.text.split()
+    if len(args) < 2:
+        log.warn("Missing torrent ID")
+        bot.reply_to(message, "Missing torrent ID. Usage: /torrent_remove [TORRENT_ID]")
+        return
+    torrent_id = args[1]
+    bot.reply_to(message, utils.torrent_remove(torrent_id))
 
 
 @bot.message_handler(func=bot.validate_user)
