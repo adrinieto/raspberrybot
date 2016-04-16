@@ -5,7 +5,9 @@ A bot to get info and interact with the Raspberry Pi.
 
  Currently the next functions are supported:
  - Get local and public ip
- - Add and list torrents downloading in Transmission
+ - Uptime
+ - Interaction with Transmission (add, list, info and remove torrent)
+ - Notification when a torrent ends downloading
 
 A full list of commands supported are listed in [`commands_list.txt`](../master/commands_list.txt).
 

@@ -1,11 +1,15 @@
 import json
-import logging
 import logging.config
+import threading
 
-import time
+from collections import defaultdict
 
 import telebot
 from raspberrybot import config, utils
+from raspberrybot.models import TorrentStatus
+
+INTERVAL = 60
+EMOJI_THUMBS_UP = "\U0001F44D"
 
 with open(config.LOGGING_CONFIG_FILE) as config_file:
     logging.config.dictConfig(json.load(config_file))
@@ -17,10 +21,12 @@ class TelegramBot(telebot.TeleBot):
     def __init__(self, token, threaded=True):
         super(TelegramBot, self).__init__(token, threaded)
         log.info("Starting bot...")
+        self.downloading_torrents = set()
         self._user_id = self.read_user_id()
         if self._user_id:
             log.info("Listening to user %d" % self.user_id)
             self.send_init_message()
+            self.check_if_downloaded()
 
     def send_init_message(self):
         log.info("Sending init message")
@@ -50,6 +56,21 @@ class TelegramBot(telebot.TeleBot):
 
     def validate_user(self, message):
         return message.chat.id == self.user_id
+
+    def check_if_downloaded(self):
+        torrents = utils.torrent_list()
+        torrents_by_status = defaultdict(set)
+        for t in torrents:
+            if t.done == "100%":
+                torrents_by_status["done"].add(t)
+            else:
+                torrents_by_status["downloading"].add(t)
+
+        recently_completed = (self.downloading_torrents - torrents_by_status["downloading"]) & torrents_by_status["done"]
+        self.downloading_torrents = torrents_by_status["downloading"]
+        for t in recently_completed:
+            self.send_message(self._user_id, "Torrent '_%s_' has been downloaded " % t.name + EMOJI_THUMBS_UP, parse_mode="Markdown")
+        threading.Timer(INTERVAL, self.check_if_downloaded).start()
 
 
 bot = TelegramBot(config.BOT_TOKEN)
@@ -107,11 +128,22 @@ def torrent_add(message):
 
 
 @bot.message_handler(commands=['torrent_list'], func=bot.validate_user)
-def torrent_list(message):
+def torrent_list_by_status(message):
     log.info("Handling command list torrents - %s" % message.text)
     torrents = utils.torrent_list()
     log.info("Torrents: %s", torrents)
-    response = "\n".join([t.format_telegram() for t in torrents])
+
+    torrents_by_type = defaultdict(list)
+
+    for torrent in torrents:
+        torrents_by_type[torrent.status].append(torrent)
+
+    response = ""
+    for key in torrents_by_type.keys():
+        response += "*%s*\n" % TorrentStatus.conversion_to_string[key]
+        for t in torrents_by_type[key]:
+            response += t.format_telegram() + "\n"
+
     bot.reply_to(message, response, parse_mode="Markdown")
 
 
@@ -128,7 +160,7 @@ def torrent_info(message):
 
 
 @bot.message_handler(commands=['torrent_remove'], func=bot.validate_user)
-def torrent_reomve(message):
+def torrent_remove(message):
     log.info("Handling command remove torrent - %s" % message.text)
     args = message.text.split()
     if len(args) < 2:
@@ -152,12 +184,12 @@ def unauthorized_user(message):
 
 
 def polling():
-    try:
-        bot.polling(none_stop=True)
-    except Exception:
-        log.exception("Error during polling. Waiting to reconnect...")
-        time.sleep(5 * 60)
-        polling()
+    # try:
+    bot.polling(none_stop=True)
+    # except Exception:
+    #     log.exception("Error during polling. Waiting to reconnect...")
+    #     time.sleep(5 * 60)
+    #     polling()
 
 
 if __name__ == "__main__":

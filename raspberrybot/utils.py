@@ -52,7 +52,7 @@ def torrent_list():
     lines = response.split("\n")[1:-1]  # header in first line, summary in last line
     torrents = []
     for x in lines:
-        words = [w for w in x.split("  ") if w]
+        words = [w.strip() for w in x.split("  ") if w]
         torrents.append(Torrent(*words))
     return torrents
 
