@@ -16,8 +16,8 @@ def system_call_with_response(command):
 
 
 def get_local_ip():
-    ip = system_call_with_response('ifconfig | grep "inet addr" | head -n 1| cut -d: -f2 | cut -d" " -f1')
-    return ip
+    ips = system_call_with_response('ifconfig | grep "inet addr" | cut -d: -f2 | cut -d" " -f1')
+    return ips
 
 
 def get_public_ip():
